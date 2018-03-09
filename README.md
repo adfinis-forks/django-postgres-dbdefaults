@@ -2,7 +2,7 @@ django-postgres-dbdefaults
 ==========================
 
 
-A clone of `django.db.backends.postgresql` that supports database defaults. For use with Django 1.9.x.
+A clone of `django.db.backends.postgresql` that supports database defaults. For use with Django 1.11.x.
 
 
 Motivation - better support database migrations with rolling web server updates
@@ -25,7 +25,7 @@ Furthermore, some of the [existing documentation](https://docs.djangoproject.com
 Solution
 --------
 
-For the `django.db.backends.postgresql` module, I have noticed that it actually adds the defaults in the db when it creates columns, but then it removes them in a separate SQL statement. As a result, I have made a subclass of the module that overrides the one string that drops the default and replaces it with a no-op. (This is admittedly a hack, but appears to be the most minimal approach that will survive more updates than copy-pasting large sections of the original class.)
+For the `django.db.backends.postgresql` module, I have noticed that it actually adds the defaults in the db when it alter columns, but then it removes them in a separate SQL statement. As a result, I have made a subclass of the module that overrides the one string that drops the default and replaces it with a no-op. (This is admittedly a hack, but appears to be the most minimal approach that will survive more updates than copy-pasting large sections of the original class.). Additionally do I force to add defaults during creation of table.
 
 For example `postgresql` might generate SQL for a migration as such:
 
@@ -59,6 +59,8 @@ Furthermore, there's no need to worry about migrations that intend to do `DROP D
 
     COMMIT;
 
+
+A **WARNING** in terms of dynamic default values: Only a one-time call of the function will be used as default.
 
 Discussion
 ----------
