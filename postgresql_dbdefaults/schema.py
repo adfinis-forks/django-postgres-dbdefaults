@@ -15,3 +15,12 @@ class DatabaseSchemaEditor(DjangoDatabaseSchemaEditor):
     # django contructs without touching too much code.
     #
     sql_alter_column_no_default = "DROP COLUMN IF EXISTS skip_django_drop_default_feature RESTRICT"
+
+    def column_sql(self, model, field, include_default=False):
+        """Add default to column even during create.
+
+        Warning:
+        In case of a dynamic default value only a one-time call of the
+        function will be set as default.
+        """
+        return super().column_sql(model, field, True)
